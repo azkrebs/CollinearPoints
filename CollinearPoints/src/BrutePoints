@@ -1,0 +1,42 @@
+import java.util.Arrays;
+import java.util.ArrayList;
+
+public class BrutePoints {
+
+    private LineSegment[] s1;
+
+    public BrutePoints(Point[] points) { // finds all line segments containing 4 points
+        Point[] arrayOfPoints = Arrays.copyOf(points, points.length);
+        Arrays.sort(arrayOfPoints);
+        ArrayList<LineSegment> listOfSegments = new ArrayList<LineSegment>();
+        for (int p = 0; p < arrayOfPoints.length - 3; p++){
+            for (int q = p + 1; q < arrayOfPoints.length - 2; q++) {
+                for (int r = q + 1; r < arrayOfPoints.length - 1; r++) {
+                    for (int s = r + 1; s < arrayOfPoints.length; s++){
+                        // create three doubles p-r, p-s and p-q that keep track of our segments
+                        double pq = points[p].slopeTo(points[q]);
+                        double pr = points[p].slopeTo(points[r]);
+                        double ps = points[p].slopeTo(points[s]);
+                        if (pq == pr && pq == ps){
+                            LineSegment betweenPS = new LineSegment(arrayOfPoints[p], arrayOfPoints[s]);
+                            if (listOfSegments.contains(betweenPS)==false){
+                                listOfSegments.add(betweenPS);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        s1 = listOfSegments.toArray(new LineSegment[listOfSegments.size()]);
+
+    }
+
+    public int numberOfSegments() { // the number of line segments
+        return s1.length;
+
+    }
+
+    public LineSegment[] segments() { // the line segments
+        return s1;
+    }
+}
