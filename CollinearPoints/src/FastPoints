@@ -1,0 +1,16 @@
+import java.util.Arrays;
+import java.util.ArrayList;
+
+public class FastPoints {
+    public FastPoints(Point[] points){ // finds all line segments containing 4 points
+
+    }
+
+    public int numberOfSegments() { // the number of line segments
+        return 0; // create some variable that keeps track of line segments and just return that
+    }
+
+    public LineSegment[] segments() { // the line segments
+        return new LineSegment[0]; // as new line segments found keep track
+    }
+}
