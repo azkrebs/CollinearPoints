@@ -2,15 +2,66 @@ import java.util.Arrays;
 import java.util.ArrayList;
 
 public class FastPoints {
-    public FastPoints(Point[] points){ // finds all line segments containing 4 points
 
+    private LineSegment[] s2;
+
+    public FastPoints(Point[] points) { // finds all line segments containing 4 points
+        Point[] copyPoints1 = Arrays.copyOf(points, points.length);
+        Point[] copyPoints2 = Arrays.copyOf(points, points.length);
+        ArrayList<LineSegment> listOfSegments = new ArrayList<LineSegment>();
+        Arrays.sort(copyPoints1);
+        for (int i = 0; i < copyPoints1.length; i++) {
+            Point origin = copyPoints1[i];
+            // problem with the origin where when new line segment is added it's all from the same spot
+            Arrays.sort(copyPoints2, origin.slopeOrder());
+            Point startOfLine = null;
+            int segmentCount = 1;
+            for (int j = 0; j < copyPoints2.length - 1; j++) {
+                if (copyPoints2[j].slopeTo(origin) == copyPoints2[j + 1].slopeTo(origin)) {
+                    segmentCount++;
+                    if (segmentCount == 2) {
+                        startOfLine = copyPoints2[j];
+                        segmentCount++;
+                    } else if (segmentCount >= 4 && j == copyPoints2.length - 2) {
+                        if (startOfLine.compareTo(origin) > 0) {
+                            listOfSegments.add(new LineSegment(origin, copyPoints2[j + 1]));
+
+                        }
+                        segmentCount = 1;
+                    }
+                } else if (segmentCount >= 4) {
+                    if (startOfLine.compareTo(origin) > 0) {
+                        /*
+                        Was playing around with this haven't gotten it to work yet
+                        Point[] donePointsPA = Arrays.copyOfRange(points, j-3,j);
+                        ArrayList<Point> donePointsAL = new ArrayList<>();
+                        for (int z = 0; z < donePointsPA.length; z++){
+                            Point newPoint = donePointsPA[z];
+                            donePointsAL.add(newPoint);
+                        }
+                        donePointsAL.add(origin);
+                        Arrays.sort(new ArrayList[]{donePointsAL});
+                        listOfSegments.add(new LineSegment(donePointsAL.get(0), donePointsAL.get(4)));
+                         */
+
+                        listOfSegments.add(new LineSegment(origin, copyPoints2[j]));
+
+                    }
+                    segmentCount = 1;
+
+                } else {
+                    segmentCount = 1;
+                }
+            }
+        }
+        s2 = listOfSegments.toArray(new LineSegment[listOfSegments.size()]);
     }
 
     public int numberOfSegments() { // the number of line segments
-        return 0; // create some variable that keeps track of line segments and just return that
+        return s2.length; // create some variable that keeps track of line segments and just return that
     }
 
     public LineSegment[] segments() { // the line segments
-        return new LineSegment[0]; // as new line segments found keep track
+        return s2; // as new line segments found keep track
     }
 }
